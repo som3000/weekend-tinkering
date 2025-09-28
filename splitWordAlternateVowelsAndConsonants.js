@@ -1,31 +1,52 @@
 function splitString(string) {
-  for (let index = 0; index < string.length; index ++) {
-    
+  let vowelFound = !isVowel(string[0]);
+  let requiredStr = "";
+  let discardStr = "";
+  let index = 0;
+
+  while (index < string.length) {
+    if (isVowel(string[index]) && !vowelFound && index < string.length) {
+      requiredStr = requiredStr + string[index];
+      vowelFound = true;
+      index++;
+    }
+
+    if (!isVowel(string[index]) && vowelFound && index < string.length) {
+      requiredStr = requiredStr + string[index];
+      vowelFound = false;
+      index++;
+    }
+    if (index < string.length && isVowel(string[index]) === vowelFound) {
+      discardStr = discardStr + "," + string[index];
+      index++;
+    }
   }
+
+  return requiredStr + discardStr;
 }
 
+
 function isVowel(char) {
-  let isVowelFound = char === "a" || char === "e" || char === "i" ;
+  let isVowelFound = char === "a" || char === "e" || char === "i";
   isVowelFound = isVowelFound || char === "o" || char === "u";
   return isVowelFound;
 }
 
-function displayMessage(string, minDist, expectedDist) {
-  const mark = minDist === expectedDist ? "✅" : "❌";
+function displayMessage(string, calculatedStr, expectedStr) {
+  const mark = calculatedStr === expectedStr ? "✅" : "❌";
   let message = mark + "[  " + string + "  ]";
-  message += "| Calculated minimum distance = " + minDist;
-  message += "| Expected minimum distance = " + expectedDist;
+  message += "| Calculated string = " + calculatedStr;
+  message += "| Expected string = " + expectedStr;
 
   return message;
 }
 
-function testMinDistVowels(string, expectedStr) {
-  const minDist = minDistVowels(string);
-  return displayMessage(string, minDist, expectedStr);
+function testSplitString(string, expectedStr) {
+  const calculatedStr = splitString(string);
+  return displayMessage(string, calculatedStr, expectedStr);
 }
 
-console.log(testMinDistVowels("hello", 3));
-console.log(testMinDistVowels("apple", 4));
-console.log(testMinDistVowels("beautiful", 1));
-console.log(testMinDistVowels("abyss", -1));
-console.log(testMinDistVowels("a1234a123a12a1a", 2));
+console.log(testSplitString("apple", "ape,p,l"));
+console.log(testSplitString("there", "tere,h"));
+console.log(testSplitString("hello", "helo,l"));
+console.log(testSplitString("abyss", "ab,y,s,s"));
